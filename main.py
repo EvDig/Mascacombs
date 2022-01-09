@@ -100,7 +100,7 @@ class Tile(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group)
-        self.speed = 576
+        self.speed = 900
         self.image = player_image
         self.rect = self.image.get_rect().move(
             tile_width * pos_x + 15, tile_height * pos_y + 5)
@@ -158,22 +158,22 @@ while running:
         if key == pygame.K_UP:
             player.rect.y -= tick
             if pygame.sprite.spritecollideany(player, wall_group):
-                player.rect.y += tick
+                player.rect.y += tick + 1
                 moving = False
         elif key == pygame.K_DOWN:
             player.rect.y += tick
             if pygame.sprite.spritecollideany(player, wall_group):
-                player.rect.y -= tick
+                player.rect.y -= tick + 1
                 moving = False
         elif key == pygame.K_RIGHT:
             player.rect.x += tick
             if pygame.sprite.spritecollideany(player, wall_group):
-                player.rect.x -= tick
+                player.rect.x -= tick + 1
                 moving = False
         elif key == pygame.K_LEFT:
             player.rect.x -= tick
             if pygame.sprite.spritecollideany(player, wall_group):
-                player.rect.x += tick
+                player.rect.x += tick + 1
                 moving = False
         else:
             moving = False
