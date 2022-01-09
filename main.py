@@ -163,12 +163,12 @@ while running:
         elif key == pygame.K_DOWN:
             player.rect.y += tick
             if pygame.sprite.spritecollideany(player, wall_group):
-                player.rect.y -= tick + 1
+                player.rect.y -= tick - 1
                 moving = False
         elif key == pygame.K_RIGHT:
             player.rect.x += tick
             if pygame.sprite.spritecollideany(player, wall_group):
-                player.rect.x -= tick + 1
+                player.rect.x -= tick - 1
                 moving = False
         elif key == pygame.K_LEFT:
             player.rect.x -= tick
