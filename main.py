@@ -3,8 +3,6 @@ import sys
 
 import pygame
 
-# Изображение не получится загрузить
-# без предварительной инициализации pygame
 pygame.init()
 size = width, height = 400, 400
 screen = pygame.display.set_mode(size)
@@ -12,7 +10,6 @@ screen = pygame.display.set_mode(size)
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data/sprites', name)
-    # если файл не существует, то выходим
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
@@ -61,21 +58,18 @@ def start_screen():
                 terminate()
             elif event.type == pygame.KEYDOWN or \
                     event.type == pygame.MOUSEBUTTONDOWN:
-                return  # начинаем игру
+                return
         pygame.display.flip()
         clock.tick(FPS)
 
 
 def load_level(filename):
     filename = "data/txt/" + filename
-    # читаем уровень, убирая символы перевода строки
     with open(filename, 'r') as mapFile:
         level_map = [line.strip() for line in mapFile]
 
-    # и подсчитываем максимальную длину
     max_width = max(map(len, level_map))
 
-    # дополняем каждую строку пустыми клетками ('.')
     return list(map(lambda x: x.ljust(max_width, '.'), level_map))
 
 
@@ -106,6 +100,7 @@ class Tile(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group)
+        self.speed = 576
         self.image = player_image
         self.rect = self.image.get_rect().move(
             tile_width * pos_x + 15, tile_height * pos_y + 5)
@@ -145,8 +140,9 @@ def generate_level(level):
 start_screen()
 # camera = Camera()
 player, level_x, level_y = generate_level(load_level('level1.txt'))
-tick = 2
 key = ''
+fps = 144
+tick = player.speed / fps
 moving = False
 running = True
 while running:
@@ -181,6 +177,7 @@ while running:
                 moving = False
         else:
             moving = False
+    clock.tick(fps)
     tiles_group.draw(screen)
     player_group.draw(screen)
 
