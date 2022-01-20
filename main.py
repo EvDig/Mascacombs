@@ -34,24 +34,21 @@ def terminate():
 
 
 def start_screen():
-    intro_text = ["ЗАСТАВКА", "",
-                  "Нажмите ЛКМ",
-                  "",
-                  ".-.-.-.-."]
+    # intro_text = ["Для движения:", "нажимайте на стрелочки",
+    #              "Нажмите ЛКМ чтобы продолжить"]
 
-    fon = pygame.transform.scale(load_image('fon.jpg'), (width, height))
-    screen.blit(fon, (0, 0))
-    font = pygame.font.Font(None, 30)
-    text_coord = 50
-    for line in intro_text:
-        string_rendered = font.render(line, True, pygame.Color('white'))
-        intro_rect = string_rendered.get_rect()
-        text_coord += 10
-        intro_rect.top = text_coord
-        intro_rect.x = 10
-        text_coord += intro_rect.height
-        screen.blit(string_rendered, intro_rect)
-
+    image = pygame.transform.scale(load_image('start_screen.png'), (width, 259))
+    screen.blit(image, (0, 0))
+    # font = pygame.font.Font(None, 30)
+    # text_coord = 100
+    # for line in intro_text:
+    # string_rendered = font.render(line, True, pygame.Color('yellow'))
+    # intro_rect = string_rendered.get_rect()
+    # text_coord += 30
+    # intro_rect.top = text_coord
+    # intro_rect.x = 30
+    # text_coord += intro_rect.height
+    # screen.blit(string_rendered, intro_rect)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -59,6 +56,27 @@ def start_screen():
             elif event.type == pygame.KEYDOWN or \
                     event.type == pygame.MOUSEBUTTONDOWN:
                 return
+        pygame.display.flip()
+        clock.tick(FPS)
+
+
+def exit_screen():
+    image = pygame.transform.scale(load_image('exit_screen.png'), (width, 400))
+    screen.blit(image, (0, 0))
+    exit_button_rect_coordinates = [160, 170, 240, 240]  # x1, y1, x2, y2 кнопки "Да"
+    cancel_button_rect_coordinates = [170, 320, 240, 370]  # x1, y1, x2, y2 кнопки "Нет"
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if exit_button_rect_coordinates[0] <= event.pos[0] <= exit_button_rect_coordinates[2] and \
+                        exit_button_rect_coordinates[1] <= event.pos[1] <= exit_button_rect_coordinates[3]:
+                    terminate()
+                elif cancel_button_rect_coordinates[0] <= event.pos[0] <= cancel_button_rect_coordinates[2] \
+                        and \
+                        cancel_button_rect_coordinates[1] <= event.pos[1] <= cancel_button_rect_coordinates[3]:
+                    return
         pygame.display.flip()
         clock.tick(FPS)
 
@@ -79,6 +97,8 @@ tile_images = {
 }
 player_image = load_image('player.png')
 player_moving_image = load_image('player_moving.png')
+player_on_right_wall = load_image('player_on_right_wall.png')
+player_on_left_wall = load_image('player_on_left_wall.png')
 tile_width = tile_height = 50
 
 # группы спрайтов
@@ -104,11 +124,13 @@ class Player(pygame.sprite.Sprite):
         self.speed = 900
         self.image = player_image
         self.moving_image = player_moving_image
+        self.on_right_wall = player_on_right_wall
+        self.on_left_wall = player_on_left_wall
         self.rect = self.image.get_rect().move(
             tile_width * pos_x + 15, tile_height * pos_y + 5)
         self.frames = [self.image, pygame.transform.flip(self.image, True, True),
-                       pygame.transform.flip(self.image, False, False),
-                       pygame.transform.flip(self.image, True, False), self.moving_image]
+                       self.on_right_wall,
+                       self.on_left_wall, self.moving_image]
         # Спрайты на случаи когда игрок двигался Вниз - Вверх - Влево - Вправо - Находится в движении
 
     def update(self, direction, moving):
@@ -129,7 +151,6 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.frames[0]
         else:
             self.image = self.frames[4]
-
 
 
 class Camera:
@@ -176,6 +197,8 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_TAB:
+            exit_screen()
         if event.type == pygame.KEYDOWN and not moving:
             key = event.key
             moving = True
