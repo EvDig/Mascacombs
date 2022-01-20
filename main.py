@@ -121,7 +121,7 @@ class Tile(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group)
-        self.speed = 450
+        self.speed = 900
         self.image = player_image
         self.moving_image = player_moving_image
         self.on_right_wall = player_on_right_wall
@@ -215,8 +215,7 @@ while running:
             # player.rect.y -= tick
             direction = 'up'
             if pygame.sprite.spritecollideany(player, wall_group):
-                # player.rect.y += tick + 1
-                # direction = 'up'
+                player.rect.y += tick + 1
                 moving = False
             for sprite in all_sprites:
                 camera.apply(sprite, direction, moving)
@@ -224,8 +223,7 @@ while running:
             # player.rect.y += tick
             direction = 'down'
             if pygame.sprite.spritecollideany(player, wall_group):
-                # player.rect.y -= tick - 1
-                # direction = 'down'
+                player.rect.y -= tick - 5
                 moving = False
             for sprite in all_sprites:
                 camera.apply(sprite, direction, moving)
@@ -233,8 +231,7 @@ while running:
             # player.rect.x += tick
             direction = 'right'
             if pygame.sprite.spritecollideany(player, wall_group):
-                # player.rect.x -= tick - 1
-                # direction = 'right'
+                player.rect.x -= tick + 5
                 moving = False
             for sprite in all_sprites:
                 camera.apply(sprite, direction, moving)
@@ -242,11 +239,11 @@ while running:
             # player.rect.x -= tick
             direction = 'left'
             if pygame.sprite.spritecollideany(player, wall_group):
-                # player.rect.x += tick + 1
-                # direction = 'left'
+                player.rect.x += tick + 1
                 moving = False
-            for sprite in all_sprites:
-                camera.apply(sprite, direction, moving)
+            elif not pygame.sprite.spritecollideany(player, wall_group):
+                for sprite in all_sprites:
+                    camera.apply(sprite, direction, moving)
 
 
         else:
