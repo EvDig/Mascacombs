@@ -121,7 +121,7 @@ class Tile(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group)
-        self.speed = 900
+        self.speed = 450
         self.image = player_image
         self.moving_image = player_moving_image
         self.on_right_wall = player_on_right_wall
@@ -154,19 +154,26 @@ class Player(pygame.sprite.Sprite):
 
 
 class Camera:
-    def __init__(self):
-        self.dx = 0
-        self.dy = 0
 
-    # сдвинуть объект obj на смещение камеры
-    def apply(self, obj):
-        obj.rect.x += self.dx
-        obj.rect.y += self.dy
-
-    # позиционировать камеру на объекте target
-    def update(self, target):
-        self.dx = -(target.rect.x + target.rect.w // 2 - width // 2)
-        self.dy = -(target.rect.y + target.rect.h // 2 - height // 2)
+    def apply(self, obj, direction, moving):
+        if moving:
+            if direction == 'up':
+                obj.rect.y -= tick
+            elif direction == 'down':
+                obj.rect.y += tick
+            elif direction == 'right':
+                obj.rect.x += tick
+            elif direction == 'left':
+                obj.rect.x -= tick
+        else:
+            if direction == 'up':
+                obj.rect.y += tick + 1
+            elif direction == 'down':
+                obj.rect.y -= tick - 1
+            elif direction == 'right':
+                obj.rect.x += tick + 1
+            elif direction == 'left':
+                obj.rect.x -= tick - 1
 
 
 def generate_level(level):
@@ -184,7 +191,7 @@ def generate_level(level):
 
 
 start_screen()
-# camera = Camera()
+camera = Camera()
 player, level_x, level_y = generate_level(load_level('level1.txt'))
 key = ''
 fps = 144
@@ -193,7 +200,7 @@ direction = ''
 moving = False
 running = True
 while running:
-    screen.fill((255, 255, 255))
+    screen.fill((0, 0, 0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -210,31 +217,43 @@ while running:
                 player.rect.y += tick + 1
                 direction = 'up'
                 moving = False
+            for sprite in all_sprites:
+                camera.apply(sprite, direction, moving)
         elif key == pygame.K_DOWN:
             player.rect.y += tick
             if pygame.sprite.spritecollideany(player, wall_group):
                 player.rect.y -= tick - 1
                 direction = 'down'
                 moving = False
+            for sprite in all_sprites:
+                camera.apply(sprite, direction, moving)
         elif key == pygame.K_RIGHT:
             player.rect.x += tick
             if pygame.sprite.spritecollideany(player, wall_group):
                 player.rect.x -= tick - 1
                 direction = 'right'
                 moving = False
+            for sprite in all_sprites:
+                camera.apply(sprite, direction, moving)
+            for sprite in player_group:
+                camera.apply(sprite, direction, moving)
         elif key == pygame.K_LEFT:
             player.rect.x -= tick
             if pygame.sprite.spritecollideany(player, wall_group):
                 player.rect.x += tick + 1
                 direction = 'left'
                 moving = False
+            for sprite in all_sprites:
+                camera.apply(sprite, direction, moving)
+            for sprite in player_group:
+                camera.apply(sprite, direction, moving)
+
         else:
             moving = False
     clock.tick(fps)
     tiles_group.draw(screen)
     player_group.draw(screen)
     player_group.update(direction, moving)
-
     # for sprite in all_sprites:
     #    camera.apply(sprite)
     # camera.update(player)
