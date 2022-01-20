@@ -231,7 +231,7 @@ while running:
             # player.rect.x += tick
             direction = 'right'
             if pygame.sprite.spritecollideany(player, wall_group):
-                player.rect.x -= tick + 5
+                player.rect.x -= tick + 7
                 moving = False
             for sprite in all_sprites:
                 camera.apply(sprite, direction, moving)
@@ -245,16 +245,12 @@ while running:
                 for sprite in all_sprites:
                     camera.apply(sprite, direction, moving)
 
-
         else:
             moving = False
     clock.tick(fps)
     tiles_group.draw(screen)
     player_group.draw(screen)
     player_group.update(direction, moving)
-    # for sprite in all_sprites:
-    #    camera.apply(sprite)
-    # camera.update(player)
     pygame.display.flip()
 
 pygame.quit()
