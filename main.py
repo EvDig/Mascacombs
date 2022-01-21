@@ -167,7 +167,7 @@ class Camera:
                 obj.rect.x += tick
         else:
             if direction == 'up':
-                obj.rect.y -= tick
+                obj.rect.y -= tick - 5
             elif direction == 'down':
                 obj.rect.y += tick
             elif direction == 'right':
@@ -195,7 +195,7 @@ camera = Camera()
 player, level_x, level_y = generate_level(load_level('level1.txt'))
 key = ''
 fps = 144
-tick = player.speed / fps
+tick = round(player.speed / fps)
 direction = ''
 moving = False
 running = True
@@ -215,7 +215,7 @@ while running:
             # player.rect.y -= tick
             direction = 'up'
             if pygame.sprite.spritecollideany(player, wall_group):
-                player.rect.y += tick + 1
+                player.rect.y += tick - 1
                 moving = False
             for sprite in all_sprites:
                 camera.apply(sprite, direction, moving)
@@ -239,11 +239,10 @@ while running:
             # player.rect.x -= tick
             direction = 'left'
             if pygame.sprite.spritecollideany(player, wall_group):
-                player.rect.x += tick + 1
+                player.rect.x += tick + 7
                 moving = False
-            elif not pygame.sprite.spritecollideany(player, wall_group):
-                for sprite in all_sprites:
-                    camera.apply(sprite, direction, moving)
+            for sprite in all_sprites:
+                camera.apply(sprite, direction, moving)
 
         else:
             moving = False
