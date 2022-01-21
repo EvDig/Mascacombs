@@ -81,6 +81,17 @@ def exit_screen():
         clock.tick(FPS)
 
 
+def death_screen():
+    image = pygame.transform.scale(load_image('death_screen.png'), (width, 179))
+    screen.blit(image, (0, 0))
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+        pygame.display.flip()
+        clock.tick(FPS)
+
+
 def load_level(filename):
     filename = "data/txt/" + filename
     with open(filename, 'r') as mapFile:
@@ -93,7 +104,8 @@ def load_level(filename):
 
 tile_images = {
     'wall': load_image('block.png'),
-    'empty': load_image('air.png')
+    'empty': load_image('air.png'),
+    'saw': load_image('saw.png')
 }
 player_image = load_image('player.png')
 player_moving_image = load_image('player_moving.png')
@@ -106,6 +118,7 @@ all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
 wall_group = pygame.sprite.Group()
+saw_group = pygame.sprite.Group()
 
 
 class Tile(pygame.sprite.Sprite):
@@ -114,6 +127,8 @@ class Tile(pygame.sprite.Sprite):
         self.image = tile_images[tile_type]
         if tile_type == 'wall':
             self.add(wall_group)
+        if tile_type == 'saw':
+            self.add(saw_group)
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
@@ -184,6 +199,8 @@ def generate_level(level):
                 Tile('empty', x, y)
             elif level[y][x] == '#':
                 Tile('wall', x, y)
+            elif level[y][x] == '*':
+                Tile('saw', x, y)
             elif level[y][x] == '@':
                 Tile('empty', x, y)
                 new_player = Player(x, y)
@@ -211,6 +228,8 @@ while running:
             moving = True
 
     if moving:
+        if pygame.sprite.spritecollideany(player, saw_group):
+            death_screen()
         if key == pygame.K_UP:
             # player.rect.y -= tick
             direction = 'up'
