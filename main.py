@@ -24,7 +24,7 @@ def load_image(name, colorkey=None):
     return image
 
 
-FPS = 50
+fps = 144
 clock = pygame.time.Clock()
 
 
@@ -57,7 +57,7 @@ def start_screen():
                     event.type == pygame.MOUSEBUTTONDOWN:
                 return
         pygame.display.flip()
-        clock.tick(FPS)
+        clock.tick(fps)
 
 
 def exit_screen():
@@ -81,15 +81,19 @@ def exit_screen():
         clock.tick(FPS)
 
 
-def death_screen():
+def death_screen(direction):
     image = pygame.transform.scale(load_image('death_screen.png'), (width, 179))
     screen.blit(image, (0, 0))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                for sprite in all_sprites:
+                    camera.revival_position(sprite, direction)
+                return
         pygame.display.flip()
-        clock.tick(FPS)
+        clock.tick(fps)
 
 
 def load_level(filename):
@@ -171,15 +175,21 @@ class Player(pygame.sprite.Sprite):
 class Camera:
 
     def apply(self, obj, direction, moving):
+        global distance_pass
         if moving:
             if direction == 'up':
                 obj.rect.y += tick
+                print(tick)
+                distance_pass[1] -= tick
             elif direction == 'down':
                 obj.rect.y -= tick
+                distance_pass[1] += tick
             elif direction == 'right':
                 obj.rect.x -= tick
+                distance_pass[0] += tick
             elif direction == 'left':
                 obj.rect.x += tick
+                distance_pass[0] -= tick
         else:
             if direction == 'up':
                 obj.rect.y -= tick - 5
@@ -189,6 +199,19 @@ class Camera:
                 obj.rect.x -= tick
             elif direction == 'left':
                 obj.rect.x += tick
+
+    def revival_position(self, obj, direction):
+        if direction == 'up':
+            print(distance_pass[1])
+            obj.rect.y += -50
+        elif direction == 'down':
+            obj.rect.y -= distance_pass[1]
+        elif direction == 'right':
+            obj.rect.x -= distance_pass[0]
+        elif direction == 'left':
+            obj.rect.x += distance_pass[0]
+
+
 
 
 def generate_level(level):
@@ -211,7 +234,7 @@ start_screen()
 camera = Camera()
 player, level_x, level_y = generate_level(load_level('level1.txt'))
 key = ''
-fps = 144
+distance_pass = [0, 0]
 tick = round(player.speed / fps)
 direction = ''
 moving = False
@@ -229,11 +252,16 @@ while running:
 
     if moving:
         if pygame.sprite.spritecollideany(player, saw_group):
-            death_screen()
+            moving = False
+            for sprite in all_sprites:
+                camera.revival_position(sprite, direction)
+                # death_screen()
         if key == pygame.K_UP:
             # player.rect.y -= tick
             direction = 'up'
+            print(distance_pass)
             if pygame.sprite.spritecollideany(player, wall_group):
+                distance_pass[1] = 0
                 player.rect.y += tick - 1
                 moving = False
             for sprite in all_sprites:
@@ -242,6 +270,7 @@ while running:
             # player.rect.y += tick
             direction = 'down'
             if pygame.sprite.spritecollideany(player, wall_group):
+                distance_pass[1] = 0
                 player.rect.y -= tick - 5
                 moving = False
             for sprite in all_sprites:
@@ -250,6 +279,7 @@ while running:
             # player.rect.x += tick
             direction = 'right'
             if pygame.sprite.spritecollideany(player, wall_group):
+                distance_pass[0] = 0
                 player.rect.x -= tick + 7
                 moving = False
             for sprite in all_sprites:
@@ -258,12 +288,14 @@ while running:
             # player.rect.x -= tick
             direction = 'left'
             if pygame.sprite.spritecollideany(player, wall_group):
+                distance_pass[0] = 0
                 player.rect.x += tick + 7
                 moving = False
             for sprite in all_sprites:
                 camera.apply(sprite, direction, moving)
 
         else:
+            distance_pass = 0
             moving = False
     clock.tick(fps)
     tiles_group.draw(screen)
