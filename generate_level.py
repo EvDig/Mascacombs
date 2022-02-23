@@ -3,6 +3,7 @@ import pygame
 from tile import Tile
 from player import Player
 from saw import Saw
+from finish import Finish
 
 
 def generate_level(level):
@@ -15,6 +16,8 @@ def generate_level(level):
                 Tile('wall', x, y)
             elif level[y][x] == '*':
                 Saw(x, y)
+            elif level[y][x] == '^':
+                Finish(x, y)
             elif level[y][x] == '@':
                 Tile('empty', x, y)
                 new_player = Player(x, y)

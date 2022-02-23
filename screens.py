@@ -4,6 +4,7 @@ from load_image import load_image
 from terminate import terminate
 import variables as v
 import sprite_groups as sg
+from game_cycle import game_start
 
 
 pygame.init()
@@ -41,7 +42,7 @@ def start_screen():
 def exit_screen():
     image = pygame.transform.scale(load_image('exit_screen.png'), (c.width, 400))
     screen.blit(image, (0, 0))
-    exit_button_rect_coordinates = [160, 170, 240, 240]  # x1, y1, x2, y2 кнопки "Да"
+    exit_button_rect_coordinates = [140, 180, 260, 250]  # x1, y1, x2, y2 кнопки "Да"
     cancel_button_rect_coordinates = [170, 320, 240, 370]  # x1, y1, x2, y2 кнопки "Нет"
     while True:
         for event in pygame.event.get():
@@ -60,7 +61,7 @@ def exit_screen():
 
 
 def level_choose_screen():
-    image = pygame.transform.scale(load_image('choose_level.png'), (c.width, 400))
+    image = pygame.transform.scale(load_image('choose_level.png'), (c.width, 389))
     screen.blit(image, (0, 0))
     one_button_rect_coordinates = [75, 215, 150, 370]  # x1, y1, x2, y2 кнопки "1"
     two_button_rect_coordinates = [245, 215, 320, 370]  # x1, y1, x2, y2 кнопки "2"
@@ -76,6 +77,20 @@ def level_choose_screen():
                         and \
                         two_button_rect_coordinates[1] <= event.pos[1] <= two_button_rect_coordinates[3]:
                     return 'level2.txt'
+        pygame.display.flip()
+        c.clock.tick(c.fps)
+
+
+def level_complete_screen():
+    image = pygame.transform.scale(load_image('level_completed.png'), (c.width, 382))
+    screen.blit(image, (0, 0))
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.KEYDOWN or \
+                    event.type == pygame.MOUSEBUTTONDOWN:
+                game_start()
         pygame.display.flip()
         c.clock.tick(c.fps)
 

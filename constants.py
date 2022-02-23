@@ -13,6 +13,9 @@ player_on_left_wall = load_image('player_on_left_wall.png')
 saw_image_0 = load_image('saw_0.png')
 saw_image_1 = load_image('saw_1.png')
 saw_image_2 = load_image('saw_2.png')
+finish_image_0 = load_image('finish_1.png')
+finish_image_1 = load_image('finish_2.png')
+finish_image_2 = load_image('finish_3.png')
 tile_width = tile_height = 50
 
 fps = 144
