@@ -28,8 +28,8 @@ class Camera:
         if direction == 'up':
             obj.rect.y += -tick
         elif direction == 'down':
-            obj.rect.y -= -tick
+            obj.rect.y -= -tick - 7
         elif direction == 'right':
-            obj.rect.x -= -tick
+            obj.rect.x -= -tick - 7
         elif direction == 'left':
-            obj.rect.x += -tick
+            obj.rect.x += -tick - 7

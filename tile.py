@@ -1,6 +1,7 @@
 import pygame
 import sprite_groups as sg
 import constants as c
+from saw import Saw
 
 
 class Tile(pygame.sprite.Sprite):
@@ -11,6 +12,7 @@ class Tile(pygame.sprite.Sprite):
             self.add(sg.wall_group)
         if tile_type == 'saw':
             self.add(sg.saw_group)
+            Saw(pos_x, pos_y)
         self.rect = self.image.get_rect().move(
             c.tile_width * pos_x, c.tile_height * pos_y)
 

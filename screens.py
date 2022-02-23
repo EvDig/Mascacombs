@@ -59,6 +59,27 @@ def exit_screen():
         c.clock.tick(c.fps)
 
 
+def level_choose_screen():
+    image = pygame.transform.scale(load_image('choose_level.png'), (c.width, 400))
+    screen.blit(image, (0, 0))
+    one_button_rect_coordinates = [75, 215, 150, 370]  # x1, y1, x2, y2 кнопки "1"
+    two_button_rect_coordinates = [245, 215, 320, 370]  # x1, y1, x2, y2 кнопки "2"
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if one_button_rect_coordinates[0] <= event.pos[0] <= one_button_rect_coordinates[2] and \
+                        one_button_rect_coordinates[1] <= event.pos[1] <= one_button_rect_coordinates[3]:
+                    return 'level1.txt'
+                elif two_button_rect_coordinates[0] <= event.pos[0] <= two_button_rect_coordinates[2] \
+                        and \
+                        two_button_rect_coordinates[1] <= event.pos[1] <= two_button_rect_coordinates[3]:
+                    return 'level2.txt'
+        pygame.display.flip()
+        c.clock.tick(c.fps)
+
+
 def death_screen(direction):
     image = pygame.transform.scale(load_image('death_screen.png'), (c.width, 200))
     screen.blit(image, (0, 0))

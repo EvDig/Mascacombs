@@ -1,16 +1,9 @@
-import os
-import sys
-
 import pygame
 
 import sprite_groups as sg
 import constants as c
 import variables as v
-from tile import Tile
-from load_image import load_image
 from load_level import load_level
-from terminate import terminate
-from player import Player
 from camera import Camera
 from generate_level import generate_level
 import screens
@@ -21,7 +14,7 @@ screen = pygame.display.set_mode(c.size)
 screens.start_screen()
 camera = Camera()
 v.camera = camera
-player, level_x, level_y = generate_level(load_level('level1.txt'))
+player, level_x, level_y = generate_level(load_level(screens.level_choose_screen()))
 key = ''
 v.tick = round(player.speed / c.fps)
 direction = ''
@@ -76,7 +69,9 @@ while running:
             moving = False
     c.clock.tick(c.fps)
     sg.tiles_group.draw(screen)
+    sg.saw_group.draw(screen)
     sg.player_group.draw(screen)
+    sg.saw_group.update()
     sg.player_group.update(direction, moving)
     pygame.display.flip()
 
