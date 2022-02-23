@@ -20,10 +20,10 @@ screen = pygame.display.set_mode(c.size)
 
 screens.start_screen()
 camera = Camera()
+v.camera = camera
 player, level_x, level_y = generate_level(load_level('level1.txt'))
 key = ''
-tick = round(player.speed / c.fps)
-v.tick = tick
+v.tick = round(player.speed / c.fps)
 direction = ''
 moving = False
 running = True
@@ -45,28 +45,28 @@ while running:
         if key == pygame.K_UP:
             direction = 'up'
             if pygame.sprite.spritecollideany(player, sg.wall_group):
-                player.rect.y += tick - 1
+                player.rect.y += v.tick - 1
                 moving = False
             for sprite in sg.all_sprites:
                 camera.apply(sprite, direction, moving)
         elif key == pygame.K_DOWN:
             direction = 'down'
             if pygame.sprite.spritecollideany(player, sg.wall_group):
-                player.rect.y -= tick - 5
+                player.rect.y -= v.tick - 5
                 moving = False
             for sprite in sg.all_sprites:
                 camera.apply(sprite, direction, moving)
         elif key == pygame.K_RIGHT:
             direction = 'right'
             if pygame.sprite.spritecollideany(player, sg.wall_group):
-                player.rect.x -= tick + 7
+                player.rect.x -= v.tick + 7
                 moving = False
             for sprite in sg.all_sprites:
                 camera.apply(sprite, direction, moving)
         elif key == pygame.K_LEFT:
             direction = 'left'
             if pygame.sprite.spritecollideany(player, sg.wall_group):
-                player.rect.x += tick + 7
+                player.rect.x += v.tick + 7
                 moving = False
             for sprite in sg.all_sprites:
                 camera.apply(sprite, direction, moving)

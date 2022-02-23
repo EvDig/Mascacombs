@@ -2,6 +2,7 @@ import pygame
 import constants as c
 from load_image import load_image
 from terminate import terminate
+import variables as v
 import sprite_groups as sg
 
 
@@ -67,7 +68,7 @@ def death_screen(direction):
                 terminate()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 for sprite in sg.all_sprites:
-                    camera.revival_position(sprite, direction)
+                    v.camera.revival_position(sprite, direction)
                 return
         pygame.display.flip()
         c.clock.tick(c.fps)

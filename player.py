@@ -1,15 +1,7 @@
-import os
-import sys
-
 import pygame
 
 import sprite_groups as sg
 import constants as c
-from tile import Tile
-from load_image import load_image
-from load_level import load_level
-from terminate import terminate
-import screens
 
 pygame.init()
 screen = pygame.display.set_mode(c.size)

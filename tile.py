@@ -1,10 +1,6 @@
-import sys
-import os
 import pygame
 import sprite_groups as sg
 import constants as c
-from load_image import load_image
-from load_level import load_level
 
 
 class Tile(pygame.sprite.Sprite):
